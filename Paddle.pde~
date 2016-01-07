@@ -1,0 +1,16 @@
+public class Paddle {
+ PVector origin;
+ PVector size;
+ color c;
+
+ public Paddle(PVector _origin, PVector _size) {
+ 	c = color(0, 122, 111);
+ 	origin = _origin;
+	size = _size;
+ }
+
+ public void drawMe() {
+ 	fill(c);
+ 	rect(_origin.x, _origin.y, size.x, size.y);
+ }
+}
