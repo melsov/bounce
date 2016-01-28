@@ -103,10 +103,6 @@ void draw() {
     }
     b.drawMyself();
   }
-
-
-  //  yVel = (abs(yVel) + .1) * abs(yVel) / yVel;
-  //  xVel = (abs(xVel) + .1) * abs(xVel) / xVel;
 }
 
 float r = size / 2.0;
@@ -131,58 +127,6 @@ private PVector[] getTopBot() {
     result[i - 2] = PVector.add(sides[i], new PVector(xPos, yPos));
   }
   return result;
-}
-
-private boolean changeCourseWithHit(Brick brick) {
-  if (brick.hasBeenHit) {
-    return false;
-  }
-  // get corner in question
-  //PVector corner = brick.origin.copy();
-  //if (xVel < 0) {
-  //  corner.x = brick.extent().x;
-  //}
-  //if (yVel < 0) {
-  //  corner.y = brick.extent().y;
-  //}
-
-  PVector left = new PVector(xPos, yPos + size / 2);
-  PVector top = new PVector(xPos + size / 2, yPos);
-  PVector right = new PVector(xPos + size, yPos + size / 2);
-  PVector bot = new PVector(xPos + size / 2, yPos + size);
-
-  if (xVel > 0 && brick.hit(left)) {
-    xVel = -baseSpeed;
-    yVel = baseSpeed * abs(yVel) / yVel;
-    brick.hasBeenHit = true;
-  } else if (brick.hit(right)) {
-    xVel = baseSpeed;
-    yVel = baseSpeed * abs(yVel) / yVel;
-    brick.hasBeenHit = true;
-  }
-
-  if (yVel < 0 && brick.hit(bot)) {
-    yVel = -baseSpeed;
-    xVel = baseSpeed * abs(xVel) / xVel;
-    brick.hasBeenHit = true;
-  } else if (brick.hit(top)) {
-    yVel = baseSpeed;
-    xVel = baseSpeed * abs(xVel) / xVel;
-    brick.hasBeenHit = true;
-  }
-
-  //PVector cornerToPos = PVector.sub(pos, corner);
-  //float cornerSlope = cornerToPos.y / cornerToPos.x;
-  //float velSlope = yVel / xVel;
-  //if (abs(cornerSlope) > abs(velSlope)) {
-  //  xVel *= -1;
-  //  xVel += random(-.2, .2);
-  //} else {
-  //  yVel *= -1;
-  //}
-  // get slope corner to pos
-  // slope gr than vel slope? : horizontal hit else: vertical
-  return brick.hasBeenHit;
 }
 
 private void lose() {
