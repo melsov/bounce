@@ -17,8 +17,12 @@ Brick[] bricks = new Brick[numBricks];
 
 int perRow = 6;
 int perColumn = numBricks / perRow;
+int brickCount;
 int size = 16;
-float baseSpeed = .1;
+float baseSpeed = 3f;
+
+int gameState;
+int timestamp;
 /*
 void setup() gets called once when the program starts
  set the size of the window to width 600 height 800
@@ -39,6 +43,7 @@ void setup() {
       PVector origin = new PVector (brickSize.x * j, brickSize.y * i);
       origin.add(upperRightCorner);
       bricks[i * perColumn + j] = new Brick(origin, brickSize);
+      brickCount++;
     }
   }
 }
@@ -54,7 +59,21 @@ void draw() method:
  make yVel be equal to yVel * -1
  */
 void draw() {
-  if (!started) return;
+  if (!started) {
+    gameState = 0;
+    startScreen();
+    return;
+  } else if (gameState > 0) {
+    if (gameState == 1) {
+      loseScreen();
+    } else if (gameState == 2) {
+      winScreen();
+    }
+    if (frameCount - timestamp > 60) {
+      started = false;
+    }
+    return;
+  }
   background(122, 166, 0);
   paddle.drawMe();
   ellipse(xPos, yPos, size, size);
@@ -83,8 +102,13 @@ void draw() {
     paddle.slide(slidePaddle);
   }
 
+  int hitBricks = 0;
   for (Brick b : bricks) {
-    if (b.hasBeenHit) { 
+    if (b.hasBeenHit) {
+      if (++hitBricks >= 2) { // brickCount * .05) {
+        win();
+        break;
+      }
       continue;
     }
     for (PVector side : getSides() ) {
@@ -103,6 +127,26 @@ void draw() {
     }
     b.drawMyself();
   }
+}
+
+private void winScreen() {
+  background(255, 122, 122);
+  msg("Level Complete");
+}
+
+private void loseScreen() {
+  background(122, 12, 12);
+  msg("You Lost");
+}
+
+private void startScreen() {
+  background(12, 200, 33);
+  msg("Press 'p' to start");
+}
+
+private void msg(String s) {
+  textSize(32);
+  text(s, 10, 45);
 }
 
 float r = size / 2.0;
@@ -130,18 +174,31 @@ private PVector[] getTopBot() {
 }
 
 private void lose() {
-  print("they lost");
-  started = false;
+  gameState = 1;
+  timestamp = frameCount;
+}
+
+private void win() {
+  gameState = 2;
+  timestamp = frameCount;  
 }
 
 private void playAgain() {
   if (started) return;
   print("starting");
+  resetBricks();
   started = true;
+  gameState = 0;
   xPos = width / 2;
   yPos = height / 2;
-  xVel = 4;
-  yVel = 4;
+  xVel = 12;
+  yVel = 12;
+}
+
+private void resetBricks() {
+ for (Brick b : bricks) {
+  b.hasBeenHit = false; 
+ }
 }
 
 void keyPressed() {
